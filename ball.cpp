@@ -70,7 +70,31 @@ public:
         else body->setDamping(0., 0.2);
     }
 };
-    
+
+// class to handle events
+class EventHandler : public osgGA::GUIEventHandler
+{
+    public:
+    bool handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa)
+    {
+        osgViewer::Viewer* viewer = dynamic_cast<osgViewer::Viewer*>(&aa);
+        if (!viewer) return false;
+        switch(ea.getEventType())
+        {
+            case(osgGA::GUIEventAdapter::KEYDOWN):
+                switch ( ea.getKey() ) {
+                    case 'S':
+                    std::cout << "tecla S" << std::endl;
+                    return false;
+                }
+            case(osgGA::GUIEventAdapter::MOVE):
+                std::cout << "mouse move" << ea.getX()<< " " << ea.getY()<< std::endl;
+                return false;
+            default:
+                return false;
+        }
+    }
+};
 
 int main()
 {
@@ -156,6 +180,8 @@ int main()
     manipulator->setHomePosition(eye, center, up);
     // Force the camera to move to the home position
     manipulator->home(0.0);
+
+    viewer.addEventHandler(new EventHandler());
         
     // record the timer tick at the start of rendering.
     osg::Timer myTimer;
