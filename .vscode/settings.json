@@ -1,0 +1,8 @@
+{
+    "files.associations": {
+        "view": "cpp",
+        "light": "cpp",
+        "ref_ptr": "cpp",
+        "vec3f": "cpp"
+    }
+}

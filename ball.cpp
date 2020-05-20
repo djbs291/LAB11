@@ -34,6 +34,7 @@ public:
         height = 0.4; // Altura do pino, em metros
         rbody = 0.0655; // Raio maximo da barriga
         // Model
+
         loadObjectModel("pino.obj");
         model->setNodeMask(CastsShadowTraversalMask);
 
@@ -133,13 +134,11 @@ int main()
     matrix.makeLookAt( osg::Vec3(0.,8.,5.), osg::Vec3(0.,0.,1.), up );
     viewer.getCamera()->setViewMatrix(matrix);
 
-    // Light
-    osg::ref_ptr<osg::LightSource> ls = new osg::LightSource;
-    ls->getLight()->setPosition(osg::Vec4(2.5,-10+30*up[1],-10+30.*up[2],1.)); 
-    ls->getLight()->setAmbient(osg::Vec4(0.1, 0.1, 0.1, 1.0));
-    ls->getLight()->setDiffuse(osg::Vec4(1.0, 1.0, 1.0, 1.0));
-    ls->getLight()->setSpecular(osg::Vec4(0.2, 0.2, 0.2, 1.0));
-    myWorld.scene->addChild(ls.get());
+    // Add Light Source
+    osg::LightSource *ls = new osg::LightSource;
+    ls->getLight()->setPosition(osg::Vec4(0.5, -0.7, 1., 0.));
+    ls->getLight()->setAmbient(osg::Vec4(0.2,0.2,0.2,1.));
+    myWorld.scene->addChild(ls);
 
     viewer.setSceneData( myWorld.scene );
 
