@@ -49,7 +49,6 @@ public:
     }
 };
     
-BowlingPin *myPin;
 
 int main()
 {
@@ -57,18 +56,28 @@ int main()
     btosgVec3 gravity = up*-9.8;
     myWorld.dynamic->setGravity(gravity);
     
+    /*
     // Beach Ball
     myBall = new btosgSphere(0.1085);
     myBall->setMass(7);
     myBall->setTexture("beachball.png");
     myBall->setPosition(0, -6, 2);
     myWorld.addObject( myBall );
-    
-    myPin = new BowlingPin();
-    myPin->setName("pino");
-    myPin->setPosition(0., -0.4, 0.2);
-    myWorld.addObject( myPin );
-    
+    */
+
+    BowlingPin *myPin[10];
+    int x, y, p = 0;
+    float space = 12*0.0254; // 12 inches
+    for(y=0;y<4;y++){
+        for(x=0;x<=y;x++){
+            myPin[p] = new BowlingPin();
+            myPin[p] -> setName("pin");
+            myPin[p] -> setPosition(0.+(x-y/2.)*space, -1.4+(y)*space, 0.20);
+            myWorld.addObject(myPin[p]);
+            p+=1;
+        }
+    }
+
     // Material for planes
     osg::ref_ptr<osg::Material> matRamp = new osg::Material;
     matRamp->setAmbient (osg::Material::FRONT_AND_BACK, osg::Vec4(0., 0., 0., 1.0));
