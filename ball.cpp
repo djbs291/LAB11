@@ -22,6 +22,12 @@ private:
     /* data */
     float height = 0.0;
     float rbody = 0.0;
+
+    float rhead = 0.04;
+    float rbase = 0.048;
+    float rneck = 0.035;
+    float zbody = -0.05;
+
 public:
     BowlingPin(){
         mass = 1.55;
@@ -30,9 +36,24 @@ public:
         // Model
         loadObjectModel("pino.obj");
         model->setNodeMask(CastsShadowTraversalMask);
-        
+
+        btCompoundShape* cShape = new btCompoundShape();
+        if ( !cShape ) fprintf(stderr,"Error creating btCompoundShape\n");
+        // Neck
+        cShape->addChildShape(btTransform(btQuaternion(0,0,0,1), btVector3(0,0,0)),
+            new btCylinderShapeZ(btVector3(rneck, rneck, height/2)) );
+        // Body
+        cShape->addChildShape(btTransform(btQuaternion(0,0,0,1), btVector3(0,0,zbody)),
+            new btSphereShape(rbody) );
+        // Base
+        cShape->addChildShape(btTransform(btQuaternion(0,0,0,1), btVector3(0,0,-height/4.)),
+            new btCylinderShapeZ(btVector3(rbase, rbase, height/4.)) );
+        // Head
+        cShape->addChildShape(btTransform(btQuaternion(0,0,0,1), btVector3(0,0,height/2-rhead)), 
+            new btSphereShape(rhead) );
+        shape = cShape;
+
         // Colision Shape
-        shape = new btCylinderShapeZ( btVector3(rbody, rbody, height/2.) );
         shape->setMargin( 0.0002 ) ;
         btVector3 inertia(0,0,0);
         shape->calculateLocalInertia(mass, inertia);
@@ -56,14 +77,12 @@ int main()
     btosgVec3 gravity = up*-9.8;
     myWorld.dynamic->setGravity(gravity);
     
-    /*
     // Beach Ball
     myBall = new btosgSphere(0.1085);
     myBall->setMass(7);
     myBall->setTexture("beachball.png");
     myBall->setPosition(0, -6, 2);
     myWorld.addObject( myBall );
-    */
 
     BowlingPin *myPin[10];
     int x, y, p = 0;
