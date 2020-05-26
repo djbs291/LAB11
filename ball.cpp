@@ -6,6 +6,7 @@
 #include <osgViewer/Viewer> 
 #include <osg/Material>
 #include "btosg/btosg.h"
+#include "btosg/btosgHUD.h"
 
 #define _DEBUG_ (0)
 
@@ -120,7 +121,12 @@ int main()
     btosgVec3 up(0., 0., 1.);
     btosgVec3 gravity = up*-9.8;
     myWorld.dynamic->setGravity(gravity);
+
+    btosgHUD* myHUD = new btosgHUD();
+    myHUD->setBackground();
+    myWorld.scene->addChild(myHUD);
     
+    //barriers
     osg::ref_ptr<osg::Material> mat = new osg::Material;
     mat->setAmbient(osg::Material::FRONT_AND_BACK,osg::Vec4(0.,0.,0.,1.0));
     mat->setDiffuse(osg::Material::FRONT_AND_BACK,osg::Vec4(0.1,0.1,0.5,1.0));
@@ -128,23 +134,32 @@ int main()
     mat->setShininess(osg::Material::FRONT_AND_BACK,64);
 
     btosgBox *myBox;
-    myBox = new btosgBox(0.04,10.,0.2);
+    myBox = new btosgBox(0.04,10.,0.5);
     myBox->setPosition(1.5,0.,0.1);
     myBox->setMass(0.);
     myBox->setMaterial(mat);
     myWorld.addObject(myBox);
 
-    myBox = new btosgBox(0.04,10.,0.2);
+    myBox = new btosgBox(0.04,10.,0.5);
     myBox->setPosition(-1.5,0.,0.1);
     myBox->setMass(0.);
     myBox->setMaterial(mat);
     myWorld.addObject(myBox);
 
+    // ball obstacles
+    for(int i = 0; i < 3; i++){
+        myBox = new btosgBox(1., 0.07, 0.5);
+        myBox->setPosition(0,(i-1)*2,0.1);
+        myBox->setMass(0.);
+        myBox->setMaterial(mat);
+        myWorld.addObject(myBox);
+    }
+
     // Beach Ball
     myBall = new btosgSphere(0.1085);
     myBall->setMass(7);
     myBall->setTexture("ball.png");
-    myBall->setPosition(0, -6, 2);
+    myBall->setPosition(0, -8, 2);
     myWorld.addObject( myBall );
 
     BowlingPin *myPin[10];
@@ -195,7 +210,7 @@ int main()
 
     // Setup camera
     osg::Matrix matrix;
-    matrix.makeLookAt( osg::Vec3(0.,8.,4.), osg::Vec3(0.,0.,1.), up );
+    matrix.makeLookAt( osg::Vec3(0.,8.,5.), osg::Vec3(0.,0.,1.), up );
     viewer.getCamera()->setViewMatrix(matrix);
 
     // Add Light Source
