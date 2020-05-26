@@ -84,8 +84,27 @@ class EventHandler : public osgGA::GUIEventHandler
             case(osgGA::GUIEventAdapter::KEYDOWN):
                 switch ( ea.getKey() ) {
                     case 'S':
-                    std::cout << "tecla S" << std::endl;
-                    return false;
+                        std::cout << "tecla S" << std::endl;
+                        return false;
+                    case 'r':
+                        ResetFlag = 1;
+                        break;
+                    case osgGA::GUIEventAdapter::KEY_Down:
+                        myBall->body->activate(true);
+                        myBall->body->applyCentralImpulse(btVector3(0.,-0.5,0.));
+                        return false;
+                    case osgGA::GUIEventAdapter::KEY_Up:
+                        myBall->body->activate(true);
+                        myBall->body->applyCentralImpulse(btVector3(0.,1.,0.));
+                        return false;
+                    case osgGA::GUIEventAdapter::KEY_Left:
+                        myBall->body->activate(true);
+                        myBall->body->applyCentralImpulse(btVector3(-0.5,0,0.));
+                        return false;
+                    case osgGA::GUIEventAdapter::KEY_Right:
+                        myBall->body->activate(true);
+                        myBall->body->applyCentralImpulse(btVector3(0.5,0,0.));
+                        return false;
                 }
             case(osgGA::GUIEventAdapter::MOVE):
                 std::cout << "mouse move" << ea.getX()<< " " << ea.getY()<< std::endl;
@@ -199,7 +218,7 @@ int main()
 	  	last_time = timenow;
         
 		if (ResetFlag>0) {
-                    myWorld.reset();
+            myWorld.reset();
 		    ResetFlag = 0;
 		}
     }
