@@ -121,10 +121,29 @@ int main()
     btosgVec3 gravity = up*-9.8;
     myWorld.dynamic->setGravity(gravity);
     
+    osg::ref_ptr<osg::Material> mat = new osg::Material;
+    mat->setAmbient(osg::Material::FRONT_AND_BACK,osg::Vec4(0.,0.,0.,1.0));
+    mat->setDiffuse(osg::Material::FRONT_AND_BACK,osg::Vec4(0.1,0.1,0.5,1.0));
+    mat->setSpecular(osg::Material::FRONT_AND_BACK,osg::Vec4(0,0,0,1.0));
+    mat->setShininess(osg::Material::FRONT_AND_BACK,64);
+
+    btosgBox *myBox;
+    myBox = new btosgBox(0.04,10.,0.2);
+    myBox->setPosition(1.5,0.,0.1);
+    myBox->setMass(0.);
+    myBox->setMaterial(mat);
+    myWorld.addObject(myBox);
+
+    myBox = new btosgBox(0.04,10.,0.2);
+    myBox->setPosition(-1.5,0.,0.1);
+    myBox->setMass(0.);
+    myBox->setMaterial(mat);
+    myWorld.addObject(myBox);
+
     // Beach Ball
     myBall = new btosgSphere(0.1085);
     myBall->setMass(7);
-    myBall->setTexture("beachball.png");
+    myBall->setTexture("ball.png");
     myBall->setPosition(0, -6, 2);
     myWorld.addObject( myBall );
 
@@ -135,7 +154,7 @@ int main()
         for(x=0;x<=y;x++){
             myPin[p] = new BowlingPin();
             myPin[p] -> setName("pin");
-            myPin[p] -> setPosition(0.+(x-y/2.)*space, -1.4+(y)*space, 0.20);
+            myPin[p] -> setPosition(0.+(x-y/2.)*space, 3.4+(y)*space, 0.20);
             myWorld.addObject(myPin[p]);
             p+=1;
         }
@@ -156,7 +175,8 @@ int main()
     myRamp->setName("Ramp1");
     myRamp->body->setFriction(100.);
     myRamp->model->getOrCreateStateSet()->
-	setAttributeAndModes(matRamp, osg::StateAttribute::ON);  
+	    setAttributeAndModes(matRamp, osg::StateAttribute::ON);
+    myRamp->setTexture("vector-wood-texture.jpg");
     myWorld.addObject( myRamp );
 
     // Plane 2
@@ -166,7 +186,8 @@ int main()
     myRamp->setName("Ramp2");
     myRamp->body->setFriction(100.);
     myRamp->model->getOrCreateStateSet()->
-	setAttributeAndModes(matRamp, osg::StateAttribute::ON);
+	    setAttributeAndModes(matRamp, osg::StateAttribute::ON);
+    myRamp->setTexture("vector-wood-texture.jpg");
     myWorld.addObject( myRamp );
 
     // Creating the viewer
@@ -174,7 +195,7 @@ int main()
 
     // Setup camera
     osg::Matrix matrix;
-    matrix.makeLookAt( osg::Vec3(0.,8.,5.), osg::Vec3(0.,0.,1.), up );
+    matrix.makeLookAt( osg::Vec3(0.,8.,4.), osg::Vec3(0.,0.,1.), up );
     viewer.getCamera()->setViewMatrix(matrix);
 
     // Add Light Source
