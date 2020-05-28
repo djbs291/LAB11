@@ -7,6 +7,7 @@
 #include <osg/Material>
 #include "btosg/btosg.h"
 #include "btosg/btosgHUD.h"
+#include <string>
 
 #define _DEBUG_ (0)
 
@@ -118,14 +119,11 @@ class EventHandler : public osgGA::GUIEventHandler
 
 int main()
 {
+    int f = 0;
     btosgVec3 up(0., 0., 1.);
     btosgVec3 gravity = up*-9.8;
     myWorld.dynamic->setGravity(gravity);
 
-    btosgHUD* myHUD = new btosgHUD();
-    myHUD->setBackground();
-    myWorld.scene->addChild(myHUD);
-    
     //barriers
     osg::ref_ptr<osg::Material> mat = new osg::Material;
     mat->setAmbient(osg::Material::FRONT_AND_BACK,osg::Vec4(0.,0.,0.,1.0));
@@ -164,12 +162,16 @@ int main()
 
     BowlingPin *myPin[10];
     int x, y, p = 0;
+    std::vector<float> vectorX;
+    std::vector<float> vectorY;
     float space = 12*0.0254; // 12 inches
     for(y=0;y<4;y++){
         for(x=0;x<=y;x++){
             myPin[p] = new BowlingPin();
             myPin[p] -> setName("pin");
-            myPin[p] -> setPosition(0.+(x-y/2.)*space, 3.4+(y)*space, 0.20);
+            vectorX.push_back(0.+(x-y/2.)*space);
+            vectorY.push_back(3.4+(y)*space);
+            myPin[p] -> setPosition(vectorX[p],vectorY[p], 0.20);
             myWorld.addObject(myPin[p]);
             p+=1;
         }
@@ -237,6 +239,21 @@ int main()
     manipulator->home(0.0);
 
     viewer.addEventHandler(new EventHandler());
+
+   std::wstring conversion = std::to_wstring(f);
+
+    // Text instance to show up in the HUD:
+    osgText::Text* textOne = new osgText::Text();
+    textOne->setCharacterSize(25);
+    textOne->setFont("arial.ttf");
+    textOne->setText("INTMU Bowling");
+    textOne->setAxisAlignment(osgText::Text::SCREEN);
+    textOne->setPosition( osg::Vec3(360., 100., -1) );
+    textOne->setColor( osg::Vec4(1., 1., 0., 1.) );
+
+    btosgHUD* myHUD = new btosgHUD();
+    myHUD->setBackground();
+    myWorld.scene->addChild(myHUD);
         
     // record the timer tick at the start of rendering.
     osg::Timer myTimer;
@@ -246,6 +263,7 @@ int main()
 
     while( !viewer.done() )
     {
+        char PinCounter[100] = { };
 	 	myWorld.stepSimulation(frame_time,10);
                 
 	  	viewer.frame();
@@ -257,6 +275,17 @@ int main()
             myWorld.reset();
 		    ResetFlag = 0;
 		}
+
+        for(int i = 0; i < p; i++){
+            if(myPin[i]-> getPosition().x() != vectorX[i] && myPin[i]-> getPosition().y() != vectorY[i] && myPin[i]->getPosition().z() == 0){
+                f+=1;
+            }
+            sprintf(PinCounter,"Pins knocked down = %d", f);
+            textOne->setText(PinCounter);
+        }   
+    
+        myHUD->addDrawable( textOne );
+
     }
 }
 
