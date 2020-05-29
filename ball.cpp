@@ -261,8 +261,19 @@ int main()
     double last_time = timenow;
     frame_time = 0.;
 
+    bool KnockedDown[p] = {false, false, false, false, false, false, false, false, false, false};
+
     while( !viewer.done() )
     {
+        std::cout << "Array KnockedDown antes do loop = ";
+        for(int i = 0; i < p; i++){
+            KnockedDown[i] = 0;
+            std::cout << KnockedDown[i];
+        }
+        std::cout << "\n";
+        f = 0;
+        std::cout << "f antes do loop = " << f << "\n";
+
         char PinCounter[100] = { };
 	 	myWorld.stepSimulation(frame_time,10);
                 
@@ -276,13 +287,21 @@ int main()
 		    ResetFlag = 0;
 		}
 
+        std::cout << "Array KnockedDown depois do loop = ";
         for(int i = 0; i < p; i++){
-            if(myPin[i]-> getPosition().x() != vectorX[i] && myPin[i]-> getPosition().y() != vectorY[i] && myPin[i]->getPosition().z() == 0){
+            std::cout << "Posicao Z do Pino = " << myPin[i]->getPosition().z() << "\n";
+            if(myPin[i]->getPosition().z() < 0.06){
+                KnockedDown[i] = true;
+                std::cout << KnockedDown[i];
+            }
+            if(KnockedDown[i] == true){
                 f+=1;
             }
             sprintf(PinCounter,"Pins knocked down = %d", f);
             textOne->setText(PinCounter);
-        }   
+        }
+        std::cout << "\n";
+        std::cout << "f depois do loop = " << f << "\n";
     
         myHUD->addDrawable( textOne );
 
