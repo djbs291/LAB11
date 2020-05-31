@@ -75,6 +75,10 @@
         "serializer": "cpp",
         "guieventadapter": "cpp",
         "texenv": "cpp",
-        "timer": "cpp"
+        "timer": "cpp",
+        "trackballmanipulator": "cpp",
+        "matrix": "cpp",
+        "geode": "cpp",
+        "drawable": "cpp"
     }
 }

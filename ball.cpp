@@ -127,35 +127,6 @@ int main()
     btosgVec3 gravity = up*-9.8;
     myWorld.dynamic->setGravity(gravity);
 
-    //barriers
-    osg::ref_ptr<osg::Material> mat = new osg::Material;
-    mat->setAmbient(osg::Material::FRONT_AND_BACK,osg::Vec4(0.,0.,0.,1.0));
-    mat->setDiffuse(osg::Material::FRONT_AND_BACK,osg::Vec4(0.1,0.1,0.5,1.0));
-    mat->setSpecular(osg::Material::FRONT_AND_BACK,osg::Vec4(0,0,0,1.0));
-    mat->setShininess(osg::Material::FRONT_AND_BACK,64);
-
-    btosgBox *myBox;
-    myBox = new btosgBox(0.04,10.,0.5);
-    myBox->setPosition(1.5,0.,0.1);
-    myBox->setMass(0.);
-    myBox->setMaterial(mat);
-    myWorld.addObject(myBox);
-
-    myBox = new btosgBox(0.04,10.,0.5);
-    myBox->setPosition(-1.5,0.,0.1);
-    myBox->setMass(0.);
-    myBox->setMaterial(mat);
-    myWorld.addObject(myBox);
-
-    // ball obstacles
-    for(int i = 0; i < 3; i++){
-        myBox = new btosgBox(1., 0.07, 0.5);
-        myBox->setPosition(0,(i-1)*2,0.1);
-        myBox->setMass(0.);
-        myBox->setMaterial(mat);
-        myWorld.addObject(myBox);
-    }
-
     // Beach Ball
     myBall = new btosgSphere(0.1085);
     myBall->setMass(7);
@@ -178,6 +149,68 @@ int main()
             myWorld.addObject(myPin[p]);
             p+=1;
         }
+    }
+
+    //barriers
+    osg::ref_ptr<osg::Material> mat = new osg::Material;
+    mat->setAmbient(osg::Material::FRONT_AND_BACK,osg::Vec4(0.,0.,0.,1.0));
+    mat->setDiffuse(osg::Material::FRONT_AND_BACK,osg::Vec4(0.1,0.1,0.5,1.0));
+    mat->setSpecular(osg::Material::FRONT_AND_BACK,osg::Vec4(0,0,0,1.0));
+    mat->setShininess(osg::Material::FRONT_AND_BACK,64);
+
+    btosgBox *myBox;
+    myBox = new btosgBox(0.04,12.5,0.5);
+    myBox->setPosition(1.5,1.2,0.3);
+    myBox->setMass(0.);
+    myBox->setMaterial(mat);
+    myWorld.addObject(myBox);
+
+    myBox = new btosgBox(0.04,12.5,0.5);
+    myBox->setPosition(-1.5,1.2,0.3);
+    myBox->setMass(0.);
+    myBox->setMaterial(mat);
+    myWorld.addObject(myBox);
+
+    myBox = new btosgBox(3.5,0.04,0.5);
+    myBox->setPosition(3.25,-5,0.3);
+    myBox->setMass(0.);
+    myBox->setMaterial(mat);
+    myWorld.addObject(myBox);
+
+    myBox = new btosgBox(3.5,0.04,0.5);
+    myBox->setPosition(-3.25,-5,0.3);
+    myBox->setMass(0.);
+    myBox->setMaterial(mat);
+    myWorld.addObject(myBox);
+
+    myBox = new btosgBox(0.04,5,0.5);
+    myBox->setPosition(-5,-7.2,1.15);
+    myBox->setRotation(osg::Quat(-osg::PI/8.,osg::Vec3(1.,0.,0.)));
+    myBox->setMass(0.);
+    myBox->setMaterial(mat);
+    myWorld.addObject(myBox);
+
+    myBox = new btosgBox(0.04,5,0.5);
+    myBox->setPosition(5,-7.2,1.15);
+    myBox->setRotation(osg::Quat(-osg::PI/8.,osg::Vec3(1.,0.,0.)));
+    myBox->setMass(0.);
+    myBox->setMaterial(mat);
+    myWorld.addObject(myBox);
+
+    myBox = new btosgBox(10,0.04,0.5);
+    myBox->setPosition(0,-9.5,2.12);
+    myBox->setRotation(osg::Quat(-osg::PI/8.,osg::Vec3(1.,0.,0.)));
+    myBox->setMass(0.);
+    myBox->setMaterial(mat);
+    myWorld.addObject(myBox);
+
+    // ball obstacles
+    for(int i = 0; i < 3; i++){
+        myBox = new btosgBox(1., 0.07, 0.5);
+        myBox->setPosition(0,(i-1)*2,0.1);
+        myBox->setMass(0.);
+        myBox->setMaterial(mat);
+        myWorld.addObject(myBox);
     }
 
     // Material for planes
@@ -210,12 +243,35 @@ int main()
     myRamp->setTexture("vector-wood-texture.jpg");
     myWorld.addObject( myRamp );
 
+    //Plane 3
+    myRamp = new btosgPlane();
+    myRamp->setRotation(osg::Quat(osg::PI/2.,osg::Vec3(1.,0.,0.)));
+    myRamp->setPosition(0.,7.5,0.);
+    myRamp->setName("Ramp3");
+    myRamp->body->setFriction(100.);
+    myRamp->model->getOrCreateStateSet()->
+	    setAttributeAndModes(matRamp, osg::StateAttribute::ON);
+    myRamp->setTexture("metal.png");
+    myWorld.addObject( myRamp );
+
+    //Plane 4
+    myRamp = new btosgPlane();
+    myRamp->setRotation(osg::Quat(0.,osg::Vec3(1.,0.,0.)));
+    myRamp->setPosition(0.,2.5,0.);
+    myRamp->setName("Ramp4");
+    myRamp->body->setFriction(100.);
+    myRamp->model->getOrCreateStateSet()->
+	    setAttributeAndModes(matRamp, osg::StateAttribute::ON);
+    myRamp->setTexture("vector-wood-texture.jpg");
+    myWorld.addObject( myRamp );
+
+
     // Creating the viewer
     osgViewer::Viewer viewer ;
 
     // Setup camera
     osg::Matrix matrix;
-    matrix.makeLookAt( osg::Vec3(0.,8.,5.), osg::Vec3(0.,0.,1.), up );
+    matrix.makeLookAt(osg::Vec3(8.,0.,5.), osg::Vec3(0.,0.,1.), up );
     viewer.getCamera()->setViewMatrix(matrix);
 
     // Add Light Source
@@ -226,7 +282,7 @@ int main()
 
     viewer.setSceneData( myWorld.scene );
 
-    viewer.getCamera()->setComputeNearFarMode( osg::CullSettings::DO_NOT_COMPUTE_NEAR_FAR ); 
+    viewer.getCamera()->setComputeNearFarMode( osg::CullSettings::DO_NOT_COMPUTE_NEAR_FAR );
         
     // Manipulator
     osg::ref_ptr<osgGA::TrackballManipulator> manipulator = new osgGA::TrackballManipulator;
@@ -268,6 +324,12 @@ int main()
     textThree->setPosition( osg::Vec3(750., 60., -1) );
     textThree->setColor( osg::Vec4(1., 1., 0., 1.) );
 
+    osgText::Text* textFour = new osgText::Text();
+    textFour->setCharacterSize(25);
+    textFour->setFont("arial.ttf");
+    textFour->setAxisAlignment(osgText::Text::SCREEN);
+    textFour->setPosition( osg::Vec3(385., 20., -1) );
+    textFour->setColor( osg::Vec4(1., 1., 0., 1.) );
 
     btosgHUD* myHUD = new btosgHUD();
     myHUD->setBackground();
@@ -276,6 +338,7 @@ int main()
     myHUD->addDrawable( textOne );
     myHUD->addDrawable( textTwo );
     myHUD->addDrawable( textThree );
+    myHUD->addDrawable( textFour );
       
     // record the timer tick at the start of rendering.
     osg::Timer myTimer;
@@ -285,6 +348,10 @@ int main()
 
     std::vector <bool> KnockedDown;
 
+    char PinCounter[100] = { };
+    char TimeCount[100] = { };
+    char FinalMessage[100] = { };
+
     while( !viewer.done() )
     {
         KnockedDown.clear();
@@ -293,11 +360,8 @@ int main()
             std::cout << KnockedDown[i] << " ";
         }
         std::cout << "\n";
-        f = 0;
         std::cout << "f antes do loop = " << f << "\n";
 
-        char PinCounter[100] = { };
-        char TimeCount[100] = { };
 	 	myWorld.stepSimulation(frame_time,10);
                 
 	  	viewer.frame();
@@ -322,7 +386,6 @@ int main()
             }
             f = KnockedDown.size();
             if(timenow < 1){
-                s = 0;
                 f = 0;
             }
             if(f >= s){
@@ -340,14 +403,19 @@ int main()
         std::cout << "s depois do loop = " << s << "\n";
         std::cout << "\n";
         std::cout << "f depois do loop = " << f << "\n";
+        
+        sprintf(PinCounter,"Pins knocked down = %d", f);
+        textOne->setText(PinCounter);
 
         if(f < p){
             sprintf(TimeCount, "Time :  %f", timenow);
             textThree->setText(TimeCount);
         }
-        
-        sprintf(PinCounter,"Pins knocked down = %d", f);
-        textOne->setText(PinCounter);
+
+        if(f == p){
+            sprintf(FinalMessage, "Congratulations!!");
+            textFour->setText(FinalMessage);
+        }
 
     }
 }
