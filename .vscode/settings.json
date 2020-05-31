@@ -65,6 +65,16 @@
         "text": "cpp",
         "kerningtype": "cpp",
         "textbase": "cpp",
-        "positionattitudetransform": "cpp"
+        "positionattitudetransform": "cpp",
+        "matrixd": "cpp",
+        "matrixf": "cpp",
+        "state": "cpp",
+        "observer_ptr": "cpp",
+        "datatypes": "cpp",
+        "registry": "cpp",
+        "serializer": "cpp",
+        "guieventadapter": "cpp",
+        "texenv": "cpp",
+        "timer": "cpp"
     }
 }

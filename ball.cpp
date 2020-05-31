@@ -2,12 +2,14 @@
 	ball.cpp 
 	Miguel Leitao, 2012, 2019
 */
+#include <chrono>
+#include <string>
+#include <thread>
 
 #include <osgViewer/Viewer> 
 #include <osg/Material>
 #include "btosg/btosg.h"
 #include "btosg/btosgHUD.h"
-#include <string>
 
 #define _DEBUG_ (0)
 
@@ -119,6 +121,7 @@ class EventHandler : public osgGA::GUIEventHandler
 
 int main()
 {
+    int s = 0;
     int f = 0;
     btosgVec3 up(0., 0., 1.);
     btosgVec3 gravity = up*-9.8;
@@ -246,35 +249,55 @@ int main()
     osgText::Text* textOne = new osgText::Text();
     textOne->setCharacterSize(25);
     textOne->setFont("arial.ttf");
-    textOne->setText("INTMU Bowling");
     textOne->setAxisAlignment(osgText::Text::SCREEN);
-    textOne->setPosition( osg::Vec3(360., 100., -1) );
+    textOne->setPosition( osg::Vec3(20, 60., -1) );
     textOne->setColor( osg::Vec4(1., 1., 0., 1.) );
+
+    osgText::Text* textTwo = new osgText::Text();
+    textTwo->setCharacterSize(25);
+    textTwo->setFont("arial.ttf");
+    textTwo->setText("INTMU Bowling");
+    textTwo->setAxisAlignment(osgText::Text::SCREEN);
+    textTwo->setPosition( osg::Vec3(400., 100., -1) );
+    textTwo->setColor( osg::Vec4(1., 1., 0., 1.) );
+
+    osgText::Text* textThree = new osgText::Text();
+    textThree->setCharacterSize(25);
+    textThree->setFont("arial.ttf");
+    textThree->setAxisAlignment(osgText::Text::SCREEN);
+    textThree->setPosition( osg::Vec3(750., 60., -1) );
+    textThree->setColor( osg::Vec4(1., 1., 0., 1.) );
+
 
     btosgHUD* myHUD = new btosgHUD();
     myHUD->setBackground();
     myWorld.scene->addChild(myHUD);
-        
+
+    myHUD->addDrawable( textOne );
+    myHUD->addDrawable( textTwo );
+    myHUD->addDrawable( textThree );
+      
     // record the timer tick at the start of rendering.
     osg::Timer myTimer;
     double timenow = myTimer.time_s();
     double last_time = timenow;
     frame_time = 0.;
 
-    bool KnockedDown[p] = {false, false, false, false, false, false, false, false, false, false};
+    std::vector <bool> KnockedDown;
 
     while( !viewer.done() )
     {
-        std::cout << "Array KnockedDown antes do loop = ";
-        for(int i = 0; i < p; i++){
-            KnockedDown[i] = 0;
-            std::cout << KnockedDown[i];
+        KnockedDown.clear();
+        std::cout << "Vector KnockedDown antes do loop = ";
+        for(int i = 0; i < KnockedDown.size(); i++){
+            std::cout << KnockedDown[i] << " ";
         }
         std::cout << "\n";
         f = 0;
         std::cout << "f antes do loop = " << f << "\n";
 
         char PinCounter[100] = { };
+        char TimeCount[100] = { };
 	 	myWorld.stepSimulation(frame_time,10);
                 
 	  	viewer.frame();
@@ -290,20 +313,41 @@ int main()
         std::cout << "Array KnockedDown depois do loop = ";
         for(int i = 0; i < p; i++){
             std::cout << "Posicao Z do Pino = " << myPin[i]->getPosition().z() << "\n";
-            if(myPin[i]->getPosition().z() < 0.06){
-                KnockedDown[i] = true;
+            if(myPin[i]->getPosition().z() < 0.10 &&
+               myPin[i]->getPosition().x() != vectorX[i] && 
+               myPin[i]->getPosition().y() != vectorY[i]){
+                
+                KnockedDown.push_back (true);
                 std::cout << KnockedDown[i];
             }
-            if(KnockedDown[i] == true){
-                f+=1;
+            f = KnockedDown.size();
+            if(timenow < 1){
+                s = 0;
+                f = 0;
             }
-            sprintf(PinCounter,"Pins knocked down = %d", f);
-            textOne->setText(PinCounter);
+            if(f >= s){
+                std::cout << "f = " << f << "\n";
+                std::cout << "s = " << s << "\n";
+                s = f;
+                std::cout << "s ficou com o valor de f e este ficou com o valor de size do vetor\n";
+            } else if (f < s) {
+                std::cout << "f = " << f << "\n";
+                std::cout << "s = " << s << "\n";
+                f = s;
+                std::cout << "f ficou com o valor de s\n";
+            }
         }
+        std::cout << "s depois do loop = " << s << "\n";
         std::cout << "\n";
         std::cout << "f depois do loop = " << f << "\n";
-    
-        myHUD->addDrawable( textOne );
+
+        if(f < p){
+            sprintf(TimeCount, "Time :  %f", timenow);
+            textThree->setText(TimeCount);
+        }
+        
+        sprintf(PinCounter,"Pins knocked down = %d", f);
+        textOne->setText(PinCounter);
 
     }
 }
